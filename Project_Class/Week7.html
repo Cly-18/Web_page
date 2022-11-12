@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="./vue/Week7.js"></script>
+</head>
+
+<body>
+    <div id="main">
+        <span></span>
+    </div>
+
+        <table>
+            <tr>
+                <td>序号</td>
+                <td>省市地区</td>
+                <td>新增确诊</td>
+                <td>新增无症状</td>
+                <td>风险地区</td>
+            </tr>
+            <tr v-for="(element,index) in list">
+                <td>{{index +1}}</td>
+                <td class="bg">
+                    <span>{{element.area}}</span>
+                    <span class="arraw" v-if="element.sublist.length>0"></span>
+                </td>
+                <td>{{element.nativeRelative}}</td>
+                <td>{{element.asymptomaticRelative}}</td>
+                <td>{{element.confirmed}}</td>
+                <td>{{element.dangerousAreas.highLevelNum+element.dangerousAreas.midLevelNum}}</td>
+            </tr>
+
+            <template v-if="isShowSubList" v-for="item in element.sublist">
+                <tr class="bg2">
+                    <td>{{item.city}}</td>
+                    <td>{{item.nativeRelative}}</td>
+                    <td>{{item.asymptomaticRelative}}</td>
+                    <td>{{item}}</td>
+                    <td>{{item}}</td>
+                    <td>{{item}}</td>
+            </template>
+
+            
+        </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

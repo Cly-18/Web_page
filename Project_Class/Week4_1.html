@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        #province {
+            padding: 10px;
+        }
+
+        .province_items {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .click {
+            background-color: deepskyblue;
+            color: white;
+        }
+
+        #college {
+            width: 98%;
+            margin: 10px auto;
+            height: 40%;
+            overflow-y: scroll;
+        }
+
+        li {
+            margin-left: 30px;
+            width: 30%;
+            float: left;
+            margin-top: 4px;
+            list-style: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>选择学校</h1>
+    <hr />
+    <div id="province">
+    </div>
+    <hr />
+    <div id="college">
+    </div>
+    <script type="text/javascript" src="./json/全国高校.js"></script>
+    <script>
+
+        var nowclick = null;
+        var province = document.getElementById("province");
+        var college = document.getElementById("college");
+        for (let i = 0; i < data.schools.length; i++) {
+            let item = document.createElement("span");
+            item.className = "province_items ";
+            item.innerText = data.schools[i].province_name;
+            province.appendChild(item);
+            item.onclick = () => {
+                if (nowclick != null) {
+                    nowclick.className = "province_items ";
+                }
+                nowclick = item;
+                item.className += " click";
+                college.innerHTML = '';
+                let ol=document.createElement("ol");
+                for (let c = 0; c < data.schools[i].cities.length; c++) {
+                    for (let k = 0; k < data.schools[i].cities[c].universities.length; k++) {
+                        let li = document.createElement("li");
+                        li.innerText = data.schools[i].cities[c].universities[k];
+                        ol.appendChild(li);
+                    }
+                }
+                college.appendChild(ol);
+            }
+        }
+
+        document.getElementsByTagName("span")[0].click();
+    </script>
+</body>
+
+</html>

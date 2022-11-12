@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        #main {
+            width: 80%;
+            margin: auto;
+            margin-top: 150px;
+            min-width: 1000px;
+        }
+
+        #top {
+            width: 100%;
+            height: auto;
+        }
+
+        #top>img {
+            display: block;
+            width: 100%;
+        }
+
+        #menu {
+            width: 100%;
+            height: 30px;
+            background-color: skyblue;
+            margin: 0;
+            color: blue;
+            font-weight: bold;
+        }
+
+        #menu a {
+            text-decoration: none;
+            margin: 0 10px;
+            line-height: 30px;
+            color: blue;
+        }
+
+        #menu>div {
+            float: right;
+        }
+        #side {
+            float: left;
+            width: 38%;
+            margin: 0 5px;
+        }
+
+        #side>div,
+        #content>div {
+            width: 100%;
+            height: 100%;
+            border: 1px gray solid;
+            margin-bottom: 10px;
+        }
+
+        #side p {
+            margin-top: 10px;
+            margin-left: 10%;
+            font-weight: bold;
+        }
+
+        #side form {
+            width: 80%;
+            text-align: center;
+            margin: 10px auto;
+        }
+
+        #side form input {
+            height: 28px;
+            border: 1px solid gray;
+            border-radius: 3px;
+            padding: 0 4px;
+        }
+
+        #side form button {
+            color: white;
+            font-weight: bold;
+            height: 30px;
+            width: 50px;
+            line-height: 30px;
+            background-color: steelblue;
+        }
+
+        #side hr {
+            width: 80%;
+            margin: 0 auto;
+            border-top: 1px solid gray;
+        }
+
+        #side ul {
+            list-style: none;
+            width: 80%;
+            padding-left: 50px;
+            padding-bottom: 20px;
+        }
+
+        #side ul li {
+            list-style: disc;
+            margin: 4px 0;
+        }
+
+        #side ul li>p {
+            font-size: small;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        #content {
+            float: left;
+            width: 60%;
+        }
+        #content p{
+            font-weight: bold;
+            margin: 50px auto 20px auto;
+            font-size: larger;
+            text-align: center;
+        }
+        #content ul{
+            margin-left: 10%;
+            list-style: none;
+            padding-bottom: 40px;
+        }
+        #content ul li{
+            margin: 8px 0;
+        }
+        #content ul span{
+            margin: 10px;
+        }
+        #content ul span[class="time"]{
+            margin: 0px;
+            margin-right: 10px;
+            float: right;
+            font-weight: lighter;
+            font-size: small;
+        }
+        #main>hr {
+            border-top: solid 5px gray;
+            width: 100%;
+            border-bottom: 2px solid skyblue;
+        }
+        #foot p{
+            text-align: center;
+            color: gray;
+            font-size: x-small;
+            margin: 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="main">
+        <div id="top">
+            <img src="./img/top_bj.gif" />
+        </div>
+        <div id="menu">
+            <a id="login" href="#">用户登录</a>
+            <div>
+                <a href="#">新闻管理</a>|
+                <a href="#">评论管理</a>|
+                <a href="#">用户管理</a>|
+                <a href="#">首&nbsp;&nbsp;页</a>
+            </div>
+        </div>
+        <div id="page">
+            <div id="side">
+                <div>
+                    <p>站内检索</p>
+                    <hr />
+                    <form>
+                        <input type="text" placeholder="请输入关键字" />
+                        <button type="submit">搜索</button>
+                    </form>
+                    <p>热点新闻</p>
+                    <hr />
+                    <ul>
+                        <li>
+                            <p>图书馆积极开展“微平台”建设</p>
+                        </li>
+
+                        <li>
+                            <p>时尚礼仪专家做客我校</p>
+                        </li>
+
+                        <li>
+                            <p>智慧城市计划投资规模超万亿</p>
+                        </li>
+
+                        <li>
+                            <p>华为发布荣耀独立品牌</p>
+                        </li>
+
+                        <li>
+                            <p>前外交部部长来我校作主题报告</p>
+                        </li>
+                    </ul>
+                    <p>最新评论</p>
+                    <hr />
+                    <ul>
+                        <li>
+                            <p>网络空间安全已成为国家的重要组成</p>
+                        </li>
+                        <li>
+                            <p>网络安全很重要，有必要立法</p>
+                        </li>
+                        <li>
+                            <p>希望能够多举办干档次的讲座和报告</p>
+                        </li>
+                        <li>
+                            <p>苹果真是太牛了</p>
+                        </li>
+                        <li>
+                            <p>为华为加油</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="content">
+                <div>
+                    <p>新闻列表</p>
+                    <ul>
+                        <li>
+                            <spa>[国内]</spa><span>时尚礼仪专家做客我校</span><span class="time">2022-09-06 10:33:59</span>
+                        </li>
+                        <li>
+                            <spa>[国内]</spa><span>华为发布荣耀独立品牌</span><span class="time">2022-09-06 10:33:59</span>
+                        </li>
+                        <li>
+                            <spa>[国内]</spa><span>苹果设备在企业移动市场中占据主导地位</span><span class="time">2022-09-06
+                            10:33:59</span>
+                        </li>
+                        <li>
+                            <spa>[国内]</spa><span>前外交部部长来我校作主题报告</span><span class="time">2022-09-06 10:33:59</span>
+                        </li>
+                        <li>
+                            <spa>[国内]</spa><span>智慧城市计划投资规模超万亿</span><span class="time">2022-09-06 10:33:59</span>
+                        </li>
+                        <li>
+                            <spa>[国内]</spa><span>国产计算机已能够支撑军队大部分应用</span><span class="time">2022-09-06
+                            10:33:59</span>
+                        </li>
+                        <li>
+                            <spa>[国内]</spa><span>我国拟制定网络安全法</span><span class="time">2022-09-06 10:33:59</span>
+                        </li>
+                        <li>
+                            <spa>[国内]</spa><span>首款全彩柔性超薄显示屏问世</span><span class="time">2022-09-06 10:33:59</span>
+                        </li>
+                        <li>
+                            <spa>[国内]</spa><span>图书馆积极开展“微平台”建设</span><span class="time">2022-09-06 10:33:59</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div id="foot">
+            <p>本网站所刊载的信息，不代表本网观点。使用本网站稿件，务经书面授权。</p>
+            <p>未经授权禁止转载，复制及建立镜像，违者将依法追究法律责任。</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <script>
+        class Person{
+            constructor(name,age){
+                this.age=age;
+                this.name=name;
+            }
+            a="22";
+            static b="55";
+        }
+
+        let p1=new Person("Bob",18);
+        let p2=new Person("Jane",18);
+        console.log(p1);
+        console.log(p1.a===p2.a);
+        console.log(p1.b===p2.b);
+
+
+    </script>
+</body>
+</html>

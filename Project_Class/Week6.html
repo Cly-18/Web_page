@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/echarts.min.js" type="text/javascript"></script>
+    <script src="./js/china.js"></script>
+    <script src="./js/jquery.js"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            background-color: #10aeb5;
+        }
+
+        #main {
+            max-width: 780px;
+            width: 100%;
+            padding: 10px;
+
+            border-radius: 12px;
+            margin: 200px auto;
+            background-color: white;
+        }
+
+        .tip {
+            color: #999;
+            font-size: .8125rem;
+            line-height: 1.1875rem;
+            margin-top: .4375rem;
+            margin-bottom: .75rem;
+        }
+
+        .header {
+            margin: 10px 0;
+            font-size: 1rem;
+            height: 1.1rem;
+            line-height: 1.1rem;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+
+        /* 国内疫情 */
+        .num_flexbox {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .num_flexitem {
+            flex-grow: 1;
+            width: 150px;
+        }
+
+        .num_flexitem>div {
+            text-align: center;
+        }
+
+        .numfont {
+            font-size: 1.0625rem;
+            height: 1.0625rem;
+            line-height: 1.0625rem;
+            margin-top: .625rem;
+            font-family: PingFangSC-Medium;
+            letter-spacing: -.0625rem;
+            font-weight: 700;
+            color: #ff6a57;
+        }
+
+        #now,
+        #total {
+            margin-top: 1.25rem;
+        }
+
+        /* 疫情速报 */
+
+        .province_flexbox {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .province_flexitem_name {
+            flex-grow: 1.5;
+
+            padding-left: 0.5rem;
+            width: 200px;
+        }
+
+        .province_flexitem_num {
+            text-align: center;
+            width: 150px;
+            flex-grow: 1;
+        }
+
+        #province_header {
+            height: 2.75rem;
+            background: #f5f6f7;
+            border-radius: .3125rem;
+            font-size: .75rem;
+            color: #555;
+            font-weight: 500;
+            line-height: 2.75rem;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            overflow: hidden;
+        }
+
+        .province_item {
+            border-bottom: 1px solid #f5f5f5;
+            padding: .75rem 0;
+            width: 100%;
+            font-size: 1rem;
+            line-height: 1rem;
+
+            font-weight: 700;
+        }
+
+        .province_item>.province_flexitem_name {
+            color: #00bec7;
+        }
+
+        .tip>span {
+            font-size: 0.625rem;
+        }
+
+
+        /* 地图 */
+
+        #map {
+            width: 100%;
+            height: 550px;
+        }
+
+        /* 新增本土趋势 */
+        #add {
+            width: 100%;
+            height: 500px;
+        }
+
+        /* 全国 总新增确诊/新增境外输入确诊 趋势 */
+
+        #rate {
+            width: 100%;
+            height: 500px;
+        }
+
+        /* 国内各地区疫情统计汇总 */
+        #total_header {
+            height: 2.75rem;
+            background: #f5f6f7;
+            border-radius: .3125rem;
+            font-size: .75rem;
+            color: #555;
+            font-weight: 500;
+            line-height: 2.75rem;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            overflow: hidden;
+        }
+
+        .total_item {
+            margin: .35rem 0;
+            width: 100%;
+            font-size: 1rem;
+            line-height: 28px;
+            background: #f5f6f7;
+            border-radius: .3125rem;
+            height: 30px;
+        }
+
+        .total_flexbox {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow: hidden;
+        }
+
+        .total_flexitem_name {
+            flex-grow: 2;
+            padding-left: 1rem;
+            width: 100px;
+        }
+
+        .total_flexitem_num {
+            text-align: center;
+            width: 100px;
+            font-size: .8rem;
+            color: #555;
+            flex-grow: 1;
+        }
+
+        .total_item .total_flexitem_name {
+            color: white;
+            background-color: #10aeb5;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* 按钮 */
+        .d_button {
+            text-align: center;
+            height: 2.5rem;
+            color: #555;
+            margin-top: 0.5rem;
+            cursor: pointer;
+        }
+        /* .map_btn{
+            margin: 1px;
+
+        } */
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div>
+            <!-- 国内疫情 -->
+            <div class="header">国内疫情</div>
+            <div id="newadd" class="num_flexbox">
+            </div>
+            <div id="now" class="num_flexbox">
+            </div>
+            <div id="total" class="num_flexbox">
+            </div>
+            <div class="tip">新增数据统计周期为昨日0-24时</div>
+        </div>
+        <div id="area">
+            <!-- 疫情速报 -->
+            <div class="header">疫情速报</div>
+            <div class="tip">该数据为31省（自治区、直辖市）本土新增，及港澳台新增确诊数据</div>
+            <div id="province_header" class="province_flexbox">
+                <div class="province_flexitem_name">地区</div>
+                <div class="province_flexitem_num">新增本土</div>
+                <div class="province_flexitem_num">新增本土无症状</div>
+                <div class="province_flexitem_num">风险区域</div>
+            </div>
+        </div>
+        <div id="b_1" class="d_button">展开全部</div>
+        <!-- <div id="map_menu">
+            <div class="map_btn">现有确诊</div>
+            <div class="map_btn">新增确诊</div>
+        </div> -->
+        <div id="map">
+        </div>
+        <div>
+            <!-- 新增本土趋势 -->
+            <div class="header">新增本土趋势</div>
+            <div id="add">
+            </div>
+        </div>
+        <div class="tip">趋势图与国家卫健委官网发布一致，每日更新一次，每次更新至前一日</div>
+        <div>
+            <!-- 全国 总新增确诊/新增境外输入确诊 趋势 -->
+            <div class="header">全国 总新增确诊/新增境外输入确诊 趋势</div>
+            <div id="rate">
+
+            </div>
+        </div>
+        <div id="province">
+            <!-- 国内各地区疫情统计汇总 -->
+            <div class="header">国内各地区疫情统计汇总</div>
+            <div class="tip">7:00-10:00为更新高峰，数据若滞后敬请谅解</div>
+            <div id="total_header" class="total_flexbox">
+                <div class="total_flexitem_name">省市地区</div>
+                <div class="total_flexitem_num">新增确诊</div>
+                <div class="total_flexitem_num">新增无症状</div>
+                <div class="total_flexitem_num">累计确诊</div>
+                <div class="total_flexitem_num">风险地区</div>
+            </div>
+        </div>
+        <div id="b_2" class="d_button">展开全部</div>
+    </div>
+    <script>
+        // 获取数据
+        $(document).ready(function () {
+            $.ajax({
+                url: "http://opendata.baidu.com/data/inner?resource_id=5653&query=%E5%9B%BD%E5%86%85%E6%96%B0%E5%9E%8B%E8%82%BA%E7%82%8E%E6%9C%80%E6%96%B0%E5%8A%A8%E6%80%81&dsp=iphone&tn=wisexmlnew&alr=1&is_opendata=1&cb=?",
+                type: "GET",
+                dataType: "jsonp",
+                success: function (i) {
+                    var result = i;
+                    // 国内疫情数据
+                    var newadd = document.getElementById("newadd");
+                    var now = document.getElementById("now");
+                    var total = document.getElementById("total");
+                    var dlist = [newadd, now, total];
+                    var list = result.Result[0].DisplayData.resultData.tplData.dynamic_list[0].data_list;
+                    for (let q = 0; q < 3; q++) {
+                        for (let i = 4 * q; i < 4 * (q + 1); i++) {
+                            let d = document.createElement("div");
+                            d.className = "num_flexitem ";
+                            let dd1 = document.createElement("div");
+                            dd1.innerText = list[i].total_desc;
+                            let dd2 = document.createElement("div");
+                            dd2.className = "numfont ";
+                            dd2.style.color = list[i].text_color;
+                            dd2.innerText = list[i].total_num;
+                            d.appendChild(dd1);
+                            d.appendChild(dd2);
+                            dlist[q].appendChild(d);
+                            if (q > 1) {
+                                let dd3 = document.createElement("div");
+                                dd3.className = "tip ";
+                                dd3.innerText = list[i].change_desc;
+                                let span1 = document.createElement("span");
+                                span1.style.color = list[i].text_color;
+                                span1.innerText = list[i].change_num;
+                                dd3.appendChild(span1);
+                                d.appendChild(dd3);
+                            }
+                        }
+                    }
+                }
+            });
+
+            $.ajax({
+                url: "http://voice.baidu.com/api/newpneumonia?from=page&callback=jsonp_1665824862967_94865",
+                type: "GET",
+                dataType: "jsonp",
+                success: function (i) {
+                    var data_1 = i.data;
+                    var mapdatalist = data_1.caseList;
+                    // 排序
+                    mapdatalist.sort((a, b) => {
+                        return b.confirmedRelative - a.confirmedRelative;
+                    });
+
+                    function total(a,b){
+                        for (let k = a; k < b; k++) {
+                            let d = document.createElement("div");
+                            d.className = "total_flexbox total_item";
+                            let dd1 = document.createElement("div");
+                            let dd2 = document.createElement("div");
+                            let dd3 = document.createElement("div");
+                            let dd4 = document.createElement("div");
+                            let dd5 = document.createElement("div");
+                            dd1.className = "total_flexitem_name";
+                            dd2.className = "total_flexitem_num";
+                            dd3.className = "total_flexitem_num";
+                            dd4.className = "total_flexitem_num";
+                            dd5.className = "total_flexitem_num";
+                            dd1.innerText = mapdatalist[k].area;
+                            dd2.innerText = mapdatalist[k].confirmedRelative;
+                            dd3.innerText = mapdatalist[k].asymptomaticRelative == "" ? "-" : mapdatalist[k].asymptomaticRelative;
+                            dd4.innerText = mapdatalist[k].confirmed;
+                            dd5.innerText = mapdatalist[k].dangerousAreas.totalNum;
+                            d.appendChild(dd1);
+                            d.appendChild(dd2);
+                            d.appendChild(dd3);
+                            d.appendChild(dd4);
+                            d.appendChild(dd5);
+                            document.getElementById("province").appendChild(d);
+                        }
+                    }
+
+                    var b_2 = document.getElementById("b_2");
+                    b_2.onclick = () => {
+                        b_2.style.visibility = "hidden";
+                        total(10,mapdatalist.length);
+                        
+                    };
+
+                    total(0,10);
+
+                    var provincelist = data_1.resumes.china.list;
+
+                    function province(a,b){
+                        for (let k = a; k < b; k++) {
+                            let d = document.createElement("div");
+                            d.className = "province_flexbox province_item";
+                            let dd1 = document.createElement("div");
+                            let dd2 = document.createElement("div");
+                            let dd3 = document.createElement("div");
+                            let dd4 = document.createElement("div");
+                            dd1.className = "province_flexitem_name";
+                            dd2.className = "province_flexitem_num";
+                            dd3.className = "province_flexitem_num";
+                            dd4.className = "province_flexitem_num";
+                            dd1.innerText = provincelist[k].area;
+                            dd2.innerText = provincelist[k].nativeRelative;
+                            dd3.innerText = provincelist[k].asymptomaticLocalRelative == "" ? "-" : provincelist[k].asymptomaticLocalRelative;
+                            dd4.innerText = provincelist[k].dangerousAreas.totalNum;
+                            d.appendChild(dd1);
+                            d.appendChild(dd2);
+                            d.appendChild(dd3);
+                            d.appendChild(dd4);
+                            document.getElementById("area").appendChild(d);
+                        }
+                    }
+
+                    var b_1 = document.getElementById("b_1");
+                    b_1.onclick = () => {
+                        b_1.style.visibility = "hidden";
+                        province(10,provincelist.length);
+                    };
+
+                    province(0,10);
+                   
+                    var mapdat = [];
+                    for (let k = 0; k < mapdatalist.length; k++) {
+                        mapdat.push({ name: mapdatalist[k].area, value: mapdatalist[k].curConfirm });
+                    }
+
+                    var map = echarts.init(document.getElementById("map"));
+                    map.setOption({
+                        grid: {
+                            containLabel: true
+                        },
+                        tooltip: {
+
+                            formatter: '省份：{b}</br>人数：{c}'
+                        },
+                        dataRange: {
+                            x: "left",
+                            y: "bottom",
+                            splitList: [
+                                { start: 0, end: 0, lable: "0", color: "#ffffff" },
+                                { start: 1, end: 9, lable: "1-9", color: "#ffcccc" },
+                                { start: 10, end: 99, lable: "10-99", color: "#ff9999" },
+                                { start: 100, end: 999, lable: "100-999", color: "#ff6666" },
+                                { start: 1000, end: 9999, lable: "1000-9999", color: "#ff3333" },
+                                { start: 10000, lable: ">10000", color: "#ff0000" },
+                            ]
+                        },
+                        series: [{
+                            type: "map",
+                            map: "china",
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        fontSize: "10px",
+                                        fontWeight: "700",
+                                        show: true
+                                    }
+                                },
+                                emphasis: {
+                                    label: {
+                                        fontSize: "15px",
+                                        fontWeight: "700",
+                                        show: true
+                                    }
+                                }
+                            },
+                            data: mapdat
+                        }]
+                    });
+
+                    var chartdata = data_1.ext.component[0].trend.list;
+                    var chartdate = data_1.ext.component[0].trend.updateDate;
+
+                    var add = echarts.init(document.getElementById("add"));
+                    add.setOption({
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                tyep: "cross"
+                            },
+                            formatter: '{a0}:{c0}</br>{a1}:{c1}'
+                        },
+                        legend: {
+                            left: 'left'
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'category',
+
+                            splitLine: { show: false },
+                            data: chartdate
+                        },
+                        yAxis: {
+                            type: 'value',
+                            minorSplitLine: {
+                                show: true
+                            }
+                        },
+                        series: [
+                            {
+                                name: chartdata[10].name,
+                                data: chartdata[10].data,
+                                type: 'line',
+                                showSymbol: false,
+                                smooth: true
+                            },
+                            {
+                                name: chartdata[12].name,
+                                data: chartdata[12].data,
+                                type: 'line',
+                                showSymbol: false,
+                                smooth: true
+                            }
+                        ]
+                    });
+
+                    var rate = echarts.init(document.getElementById("rate"));
+                    rate.setOption({
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                tyep: "cross"
+                            },
+                            formatter: '{a0}:{c0}</br>{a1}:{c1}'
+                        },
+                        legend: {
+                            left: 'left'
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'category',
+
+                            splitLine: { show: false },
+                            data: chartdate
+                        },
+                        yAxis: {
+                            type: 'value',
+                            minorSplitLine: {
+                                show: true
+                            }
+                        },
+                        series: [
+                            {
+                                name: chartdata[4].name,
+                                data: chartdata[4].data,
+                                type: 'line',
+                                showSymbol: false,
+                                smooth: true
+                            },
+                            {
+                                name: chartdata[9].name,
+                                data: chartdata[9].data,
+                                type: 'line',
+                                showSymbol: false,
+                                smooth: true
+                            }
+                        ]
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

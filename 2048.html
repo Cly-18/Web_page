@@ -1,0 +1,593 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>2048 By Cly</title>
+<style>
+	*
+	{
+		border: 0;
+		margin:0;
+		padding: 0;
+	}
+	html
+	{
+		width: 100%;
+		height: 100%;
+		background-color: black;
+	}
+	/*游戏结束页面*/
+	#GameOver
+	{
+		position: absolute;
+		left: 0;right: 0;
+		top: 0;bottom: 0;
+		background-color: rgba(0,0,0,0.5);
+		z-index: 100;
+	}
+	#GameOver>div
+	{
+		margin: 350px auto 0;
+		background-color: aqua;
+		width: 300px;
+		height: 150px;
+		border-radius: 10px;
+	}
+	#GameOver p
+	{
+		text-align: center;
+		line-height: 40px;
+		font-size: 25px;
+		margin: 0;
+		
+	}
+	#btn
+	{
+		background-color: red;
+		margin: 10px 20px;
+		border-radius: 10px;
+		width: 260px;
+		height: 80px;
+		line-height: 80px;
+		text-align: center;
+		font-size: 40px;
+	}
+	#btn:hover
+	{
+		background-color: brown;
+	}
+	/*游戏页面*/
+	#Game
+	{
+		position: relative;
+		width: 600px;
+		height: 600px;
+		margin: 100px auto;
+		background-color: #666699;
+		border-radius: 20px;
+		overflow: hidden;
+	}
+	.bg
+	{
+		
+		width: 125px;
+		height: 125px;
+		float: left;
+		margin: 20px 0 0 20px;
+		background-color: gray;
+		border-radius: 15px;
+	}
+	/*方块移动页面*/
+	#cubemove
+	{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+	/*分数*/
+	body>p
+	{
+		width: 150px;
+		text-align: center;
+		background-color: rgba(255,255,255,0.5);
+		border-radius: 10px;
+	}
+	/*方块*/
+	.cell
+	{
+		position: absolute;
+		width: 125px;
+		height: 125px;
+		border-radius: 15px;
+		line-height: 125px;
+		text-align: center;
+		color: black;
+		font-weight: 500;
+		left: ;
+		top: ;
+		transition: 0.95s;
+	}
+	.n2{font-size: 80px;background-color: #66cccc;}
+	.n4{font-size: 80px;background-color: #ccff66;}
+	.n8{font-size: 80px;background-color: #ff99cc;}
+	.n16{font-size: 70px;background-color: #ff9999;}
+	.n32{font-size: 70px;background-color: #ffcc99;}
+	.n64{font-size: 70px;background-color: #ff6666;}
+	.n128{font-size: 60px;background-color: #ffff66;}
+	.n256{font-size: 60px;background-color: #99cc66;}
+	.n512{font-size: 60px;background-color: #ff9900;}
+	.n1024{font-size: 50px;background-color: #ffcc00;}
+	.n2048{font-size: 50px;background-color: #ff0033;}
+	.n4096{font-size: 50px;background-color: #ccff00;}
+	.n8192{font-size: 50px;background-color: #cc3399;}
+	.n16384{font-size: 40px;background-color: #ff6600;}
+	.n32768{font-size: 40px;background-color: #993366;}
+	.n65536{font-size: 40px;background-color: #666633;}
+</style>
+</head>
+
+<body>
+	<div id="GameOver">
+			<div>
+				<p>游戏结束</p>
+				<div id="btn">再玩一局</div>
+			</div>
+	</div>
+	<p>当前分数：<span id="score">0</span></p>
+	<div id="Game">
+		<div id="cubemove"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+		<div class="bg"></div>
+	</div>
+</body>
+<script>
+	var Game=
+		{
+			cube:[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
+			gamestate:0,
+			score:0,
+
+			//初始化函数
+			start:function()
+			{
+				document.getElementById("GameOver").style.display="none";
+				this.cube=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+				this.score=0;
+				this.changestate(2);
+				this.rancube();
+				this.toview();
+			},
+			
+			changestate:function(state)
+			{
+				this.gamestate=state;
+			},
+			
+			//在游戏面板上显示cube和score
+			toview:function()
+			{
+				document.getElementById("cubemove").innerHTML="";
+				for(let i=0;i<4;i++)
+					{
+						for(let j=0;j<4;j++)
+							{
+								if(this.cube[i][j]!==0)
+									{
+										let node=document.createElement("div");
+										node.className="cell n"+this.cube[i][j];
+										node.innerHTML=this.cube[i][j];
+										node.style.left=j*125+(j+1)*20+"px";
+										node.style.top=i*125+(i+1)*20+"px";
+										document.getElementById("cubemove").appendChild(node);
+									}
+							}
+					}
+				Game.changestate(2);
+				document.getElementById("score").innerHTML=this.score;
+			},
+			
+			//能移动
+			canmove:function()
+			{
+				for(let i=0;i<4;i++)
+					{
+						for(let j=0;j<4;j++)
+							{
+								if(this.cube[i][j]==0)
+									{
+										return true;
+									}
+								if(i<3)
+									{
+										if(this.cube[i][j]==this.cube[i+1][j])
+											{
+												return true;
+											}
+									}
+								if(j<3)
+									{
+										if(this.cube[i][j]==this.cube[i][j+1])
+											{
+												return true;
+											}
+									}
+							}
+					}
+				return false;
+			},
+			
+			move:function(e)
+			{
+				console.log(e.keyCode);
+				console.log(Game.gamestate);
+				if(Game.gamestate===2&&Game.canmove())
+					{
+						if(e.keyCode==37)
+							{
+								Game.changestate(1);
+								if(Game.left())
+									{
+										Game.rancube();
+										setTimeout("Game.toview()",1000);
+									}
+								else
+									{
+										Game.changestate(2);
+									}
+							}
+						if(e.keyCode==38)
+							{
+								Game.changestate(1);
+								if(Game.up())
+									{
+										Game.rancube();
+										setTimeout("Game.toview()",1000);
+									}
+								else
+									{
+										Game.changestate(2);
+									}
+							}
+						if(e.keyCode==39)
+							{
+								Game.changestate(1);
+								if(Game.right())
+									{
+										Game.rancube();
+										setTimeout("Game.toview()",1000);
+									}
+								else
+									{
+										Game.changestate(2);
+									}
+							}
+						if(e.keyCode==40)
+							{
+								Game.changestate(1);
+								if(Game.down())
+									{
+										Game.rancube();
+										setTimeout("Game.toview()",1000);
+									}
+								else
+									{
+										Game.changestate(2);
+									}
+							}
+
+					}
+				if(!Game.canmove())
+					{
+						setTimeout('document.getElementById("GameOver").style.display="block"',1000);
+					}
+			},
+			
+			//获取div
+			getdivindex:function()
+			{
+				var obj={};
+				var count=0;
+				for(let y=0;y<4;y++)
+					{
+						for(let x=0;x<4;x++)
+							{
+								if(this.cube[y][x]!==0)
+									{
+										obj[y+","+x]=count;
+										count++;
+									}
+							}
+					}
+				return obj;
+			},
+			
+			
+			left:function()
+			{
+				var cubelist=document.getElementById("cubemove").children;
+				var count=0;
+				var canleft=false;
+				for(let i=0;i<4;i++)
+					{
+						for(let j=0;j<4;j++)
+							{
+								//非0值
+								if(this.cube[i][j]!=0)
+									{
+										//非第一列
+										if(j>0)
+										{
+											for(let k=j-1;k>=0;k--)
+												{
+													//从右往左第一个非0值
+													if(this.cube[i][k]!==0)
+														{
+															//值相等  则乘二赋值
+															if(this.cube[i][k]===this.cube[i][j])
+																{
+																	canleft=true;
+																	cubelist[count].style.left=k*125+(k+1)*20+"px";
+																	this.cube[i][k]=this.cube[i][j]*2;
+																	this.cube[i][j]=0;
+																	this.score++;
+																}
+															else
+																{
+																	if(k+1!=j)
+																		{
+																			canleft=true;
+																			cubelist[count].style.left=(k+1)*125+(k+2)*20+"px";
+																			this.cube[i][k+1]=this.cube[i][j];
+																			this.cube[i][j]=0;
+																		}
+																}
+															
+															break;
+														}
+													if(k==0)
+														{
+															canleft=true;
+															cubelist[count].style.left=k*125+(k+1)*20+"px";
+															this.cube[i][k]=this.cube[i][j];
+															this.cube[i][j]=0;
+														}
+												}
+										}
+										count++;
+									}
+								
+							}
+					}
+				return canleft;
+			},
+			
+			right:function()
+			{
+				var cubelist=document.getElementById("cubemove").children;
+				var list=this.getdivindex();
+				var canright=false;
+				for(let i=3;i>=0;i--)
+					{
+						for(let j=3;j>=0;j--)
+							{
+								if(this.cube[i][j]!=0)
+									{
+										var index=list[i+","+j];
+										if(j<3)
+										{
+											for(let k=j+1;k<=3;k++)
+												{
+													if(this.cube[i][k]>0)
+														{
+															if(this.cube[i][k]===this.cube[i][j])
+																{
+																	canright=true;
+																	cubelist[index].style.left=k*125+(k+1)*20+"px";
+																	this.cube[i][k]=this.cube[i][j]*2;
+																	this.cube[i][j]=0;
+																	this.score++;
+																}
+															else
+																{
+																	if(k-1!=j)
+																		{
+																			canright=true;
+																			cubelist[index].style.left=(k-1)*125+k*20+"px";
+																			this.cube[i][k-1]=this.cube[i][j];
+																			this.cube[i][j]=0;
+																		}
+																}
+															
+															break;
+														}
+													if(k==3)
+														{
+															canright=true;
+															cubelist[index].style.left=k*125+(k+1)*20+"px";
+															this.cube[i][k]=this.cube[i][j];
+															this.cube[i][j]=0;
+														}
+												}
+										}
+									}
+							}
+					}
+				return canright;
+			},
+			
+			down:function()
+			{
+				var cubelist=document.getElementById("cubemove").children;
+				var list=this.getdivindex();
+				var candown=false;
+				for(let i=3;i>=0;i--)
+					{
+						for(let j=3;j>=0;j--)
+							{
+								if(this.cube[j][i]!=0)
+									{
+										var index=list[j+","+i];
+										if(j<3)
+										{
+											for(let k=j+1;k<4;k++)
+												{
+													if(this.cube[k][i]>0)
+														{
+															if(this.cube[k][i]===this.cube[j][i])
+																{
+																	candown=true;
+																	cubelist[index].style.top=k*125+(k+1)*20+"px";
+																	this.cube[k][i]=this.cube[j][i]*2;
+																	this.cube[j][i]=0;
+																	this.score++;
+																}
+															else
+																{
+																	if(k-1!=j)
+																		{
+																			candown=true;
+																			cubelist[index].style.top=(k-1)*125+k*20+"px";
+																			this.cube[k-1][i]=this.cube[j][i];
+																			this.cube[j][i]=0;
+																		}
+																}
+															break;
+														}
+													if(k==3)
+														{
+															candown=true;
+															cubelist[index].style.top=k*125+(k+1)*20+"px";
+															this.cube[k][i]=this.cube[j][i];
+															this.cube[j][i]=0;
+														}
+												}
+										}
+									}
+							}
+					}
+				return candown;
+			},
+			
+			up:function()
+			{
+				console.log(this.cube);
+				var cubelist=document.getElementById("cubemove").children;
+				var list=this.getdivindex();
+				var canup=false;
+				for(let i=0;i<4;i++)
+					{
+						for(let j=0;j<4;j++)
+							{
+								//j:0->4
+								if(this.cube[j][i]!=0)
+									{
+										var index=list[j+","+i];
+										if(j>0)
+										{
+											for(let k=j-1;k>=0;k--)
+												{
+													if(this.cube[k][i]>0)
+														{
+															if(this.cube[k][i]===this.cube[j][i])
+																{
+																	canup=true;
+																	cubelist[index].style.top=k*125+(k+1)*20+"px";
+																	this.cube[k][i]=this.cube[j][i]*2;
+																	this.cube[j][i]=0;
+																	this.score++;
+																}
+															else
+																{
+																	if(k+1!=j)
+																		{
+																			canup=true;
+																			cubelist[index].style.top=(k+1)*125+(k+2)*20+"px";
+																			this.cube[k+1][i]=this.cube[j][i];
+																			this.cube[j][i]=0;
+																		}
+																}
+															break;
+														}
+													if(k==0)
+														{
+															canup=true;
+															cubelist[index].style.top=k*125+(k+1)*20+"px";
+															this.cube[k][i]=this.cube[j][i];
+															this.cube[j][i]=0;
+														}
+												}
+										}
+									}
+							}
+					}
+				return canup;
+			},
+			
+			
+			//为0位置 返回键值对数组
+			zero:function()
+			{
+				var ranlist=[];
+				//非0值进ranlist
+				for(let i=0;i<4;i++)
+					{
+						for(let j=0;j<4;j++)
+							{
+								if(this.cube[i][j]==0)
+									{
+										ranlist[ranlist.length]=[i,j];
+									}
+							}
+					}
+				return ranlist;
+			},
+			
+			//随机数
+			rannum:function(length)
+			{
+				return Math.floor(Math.random()*length);
+			},
+			
+			//随机赋值
+			rancube:function()
+			{
+				if(this.zero().length>1)
+					{
+						var ran1=this.rannum(this.zero().length);
+						this.cube[this.zero()[ran1][0]][this.zero()[ran1][1]]=Math.random()>0.5?2:4;
+						var ran2=this.rannum(this.zero().length);
+						this.cube[this.zero()[ran2][0]][this.zero()[ran2][1]]=Math.random()>0.5?2:4;
+					}
+				else if(this.zero().length==1)
+					{
+						var ran=this.zero()[0];
+						this.cube[ran[0]][ran[1]]=this.rannum(1)>0.5?2:4;
+					}
+			},
+			
+			
+		}
+	
+	
+	document.addEventListener("keydown",Game.move);
+	document.getElementById("btn").onclick=()=>Game.start();
+	Game.start();
+	
+	
+
+</script>
+</html>

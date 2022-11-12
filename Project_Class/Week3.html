@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        label {
+            display: inline-block;
+            width: 150px;
+            text-align: right;
+        }
+
+        button[type="submit"] {
+            margin-left: 180px;
+        }
+
+        span {
+            margin-left: 40px;
+            font-size: small;
+        }
+
+        .tip {
+            border: solid 1px goldenrod;
+            background-color: lightyellow;
+        }
+
+        .error {
+            border: solid 1px red;
+            background-color: pink;
+        }
+
+        .ok {
+            border: solid 1px aqua;
+            background-color: lightskyblue;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>用户注册</h1>
+    <form action="#">
+        <p>
+            <label>用户名：</label>
+            <input type="text" />
+            <span class="tip" id="t_username">请输入4—12位用户名(首位为字母)</span>
+        </p>
+        <p>
+            <label>登陆密码：</label>
+            <input type="password" />
+            <span class="tip" id="t_psaaword">密码为6-16位</span>
+        </p>
+        <p>
+            <label>重复登录密码：</label>
+            <input type="password" />
+            <span class="tip" id="t_repassword">请再次输入密码</span>
+        </p>
+        <p>
+            <label>手机号：</label>
+            <input type="tel" />
+            <span class="tip" id="t_phoneNo">请输入手机号</span>
+        </p>
+        <p>
+            <button type="submit" id="submit">注册</button>
+            <button type="reset">清空</button>
+        </p>
+    </form>
+    <script>
+        var inputlist = document.getElementsByTagName("input");
+
+        var username = /^[A-Z][a-zA-Z0-9_]{3,11}$/;
+        var psd = /^\w{6,16}$/;
+        var tel = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+
+        var keylist = { 0: "t_username", 1: "t_psaaword", 2: "t_repassword", 3: "t_phoneNo" };
+
+
+        for (let i = 0; i < 4; i++) {
+            inputlist[i].onblur = () => {
+
+                if (inputlist[i].value == "") {
+                    setNull(document.getElementById(keylist[i]));
+                } else {
+
+                    if (i == 0 && username.test(inputlist[i].value)) {
+                        setOk(document.getElementById(keylist[i]));
+                    } else if (i == 1 && psd.test(inputlist[i].value)) {
+                        setOk(document.getElementById(keylist[i]));
+                        if (inputlist[1].value === inputlist[2].value) {
+                            setOk(document.getElementById(keylist[2]));
+                        }
+                    } else if (i == 3 && tel.test(inputlist[i].value)) {
+                        setOk(document.getElementById(keylist[i]));
+                    } else if (i == 2 && inputlist[1].value === inputlist[i].value && psd.test(inputlist[1].value)) {
+                        setOk(document.getElementById(keylist[i]));
+                    } else {
+                        setError(document.getElementById(keylist[i]));
+                    }
+                }
+            }
+        }
+
+        function setNull(span) {
+            span.className = "error";
+            span.textContent = "不能为空";
+        }
+
+        function setError(span) {
+            span.className = "error";
+            span.textContent = "输入错误";
+        }
+
+        function setOk(span) {
+            span.className = "ok";
+            span.textContent = "输入正确";
+        }
+
+        document.getElementById("submit").onclick = () => {
+            if (inputlist[1].value === inputlist[2].value && tel.test(inputlist[3].value) && username.test(inputlist[0].value) && psd.test(inputlist[1].value)) {
+                alert("注册成功！");
+            } else {
+                alert("注册失败！")
+            }
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+		form 
+		{
+		  /* 居中表单 */
+		  margin: 0 auto;
+		  width: 400px;
+		  /* 显示表单的轮廓 */
+		  padding: 1em;
+		  border: 1px solid #CCC;
+		  border-radius: 1em;
+		}
+		label 
+		{
+		  /* 确保所有label大小相同并正确对齐 */
+		  display: inline-block;
+		  text-align: right;
+		  margin-bottom: 10px;
+		}
+		input, textarea 
+		{
+		  /* 确保所有文本输入框字体相同
+		     textarea默认是等宽字体 */
+		  font: 1em sans-serif;
+		
+		  /* 使所有文本输入框大小相同 */
+		  width: 300px;
+		  box-sizing: border-box;
+		
+		  /* 调整文本输入框的边框样式 */
+		  border: 1px solid #999;
+		}
+		
+		input:focus, textarea:focus 
+		{
+		  /* 给激活的元素一点高亮效果 */
+		  border-color: #000;
+		}
+		
+		textarea 
+		{
+		  /* 使多行文本输入框和它们的label正确对齐 */
+		  vertical-align: top;
+		
+		  /* 给文本留下足够的空间 */
+		  height: 5em;
+		}
+		button 
+		{
+		  margin-left: 90px;
+		}
+		</style>
+	</head>
+	<body>
+		<form action="#" method="post">
+			<fieldset>
+				<legend>表单</legend>
+				<label>姓名：
+					<input type="text" name="username"/>
+				</label>
+				<label>密码：
+					<input type="password" name="password"/>
+				</label>
+				<label>备注：
+					<textarea placeholder="特别说明..."></textarea>
+				</label>
+				<button type="submit">提交</button>
+				<button type="reset">重置</button>
+			</fieldset>
+			
+			<select id="groups" name="groups">
+			  <optgroup label="fruits">
+			    <option>Banana</option>
+			    <option selected>Cherry</option>
+			    <option>Lemon</option>
+			  </optgroup>
+			  <optgroup label="vegetables">
+			    <option>Carrot</option>
+			    <option>Eggplant</option>
+			    <option>Potato</option>
+			  </optgroup>
+			</select>
+			<input type="range" name="beans" id="beans" min="0" max="500" step="10">
+			<input type="color" name="color" id="color">
+			<input type="file" name="file" id="file" accept="image/*" multiple>
+			<progress max="100" value="75">75/100</progress>
+			<meter min="0" max="100" value="20" low="33" high="66" optimum="50">75</meter>
+			
+		</form>
+	</body>
+</html>
